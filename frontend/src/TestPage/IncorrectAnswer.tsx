@@ -18,6 +18,24 @@ export const IncorrectAnswer = ({
   nextTestable: UserTestable | undefined;
   inputRef: React.MutableRefObject<HTMLInputElement | null>;
 }) => {
+  const proceed = (
+    maybeModifyState: (s: SavedState) => SavedState = (t) => t
+  ) =>
+    proceedImpl(
+      {
+        transientState,
+        setTransientState,
+        setSavedState,
+        currentTestable,
+        nextTestable,
+      },
+      maybeModifyState
+    );
+  const checkAndProceed = () => {
+    if (transientState.inputText.toLowerCase() == currentTestable.reveal) {
+      proceed();
+    }
+  };
   return (
     <>
       <h1>{currentTestable.display}</h1>
@@ -38,37 +56,27 @@ export const IncorrectAnswer = ({
         }
         onKeyDown={(e) => {
           if (e.key == "Enter") {
-            if (
-              transientState.inputText.toLowerCase() == currentTestable.reveal
-            ) {
-              proceedAndMaybeModifyCard({
-                transientState,
-                setTransientState,
-                setSavedState,
-                currentTestable,
-                nextTestable,
-              });
-            }
+            checkAndProceed();
           }
         }}
       />
-      <button onClick={() => {
-        proceedAndMaybeModifyCard({
-          transientState,
-          setTransientState,
-          setSavedState,
-          currentTestable,
-          nextTestable,
-        }, (s) => {
-          s.editedCards[currentTestable.key] = transientState.inputText.toLowerCase();
-          return s;
-        })
-      }}>Submit correction</button>
+      <button onClick={checkAndProceed}>Submit (or press Enter)</button>
+      <button
+        onClick={() => {
+          proceed((s) => {
+            s.editedCards[currentTestable.key] =
+              transientState.inputText.toLowerCase();
+            return s;
+          });
+        }}
+      >
+        Submit correction
+      </button>
     </>
   );
 };
 
-const proceedAndMaybeModifyCard = (
+const proceedImpl = (
   {
     transientState,
     setTransientState,

@@ -15,6 +15,12 @@ export const CurrentTestable = ({
   currentTestable: UserTestable;
   inputRef: React.MutableRefObject<HTMLInputElement | null>;
 }) => {
+  const handleKeyUpFn = handleKeyUp(
+    transientState,
+    setTransientState,
+    setSavedState,
+    currentTestable
+  );
   return <>
     <h1>{currentTestable.display}</h1>
     <p>{transientState.lastResult}</p>
@@ -31,13 +37,9 @@ export const CurrentTestable = ({
           inputText: e.target.value,
         })
       }
-      onKeyUp={handleKeyUp(
-        transientState,
-        setTransientState,
-        setSavedState,
-        currentTestable
-      )}
+      onKeyUp={handleKeyUpFn}
     />
+    <button onClick={()=>handleKeyUpFn({key: "Enter"})}>Submit (or press Enter)</button>
   </>
 };
 
@@ -48,7 +50,7 @@ const handleKeyUp =
     setSavedState: React.Dispatch<React.SetStateAction<SavedState>>,
     currentTestable: UserTestable
   ) =>
-  (e: React.KeyboardEvent<HTMLInputElement>) => {
+  (e: {key: string}) => {
     if (e.key == "Enter" && transientState.inputText != "") {
       const wasCorrect =
         transientState.inputText.toLowerCase() == currentTestable.reveal;
