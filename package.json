@@ -1,0 +1,19 @@
+{
+  "name": "your-app",
+  "version": "1.0.0",
+  "description": "your-description",
+  "scripts": {
+    "dev": "npm run deep-install && concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "deep-install": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "dev:frontend": "cd frontend && npm run start",
+    "dev:backend": "cd backend && npm run start",
+    "test": "vitest",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "concurrently": "^9.0.1",
+    "npm": "^10.7.0",
+    "prettier": "^3.3.2",
+    "vitest": "^3.0.4"
+  }
+}
