@@ -33,7 +33,6 @@ const AspectView = (props: { children: React.ReactElement }) => {
       }}
     >
       <div style={{ ...constraint, background: "white", position: "relative" }}>{props.children}</div>
-      ;
     </div>
   );
 };
